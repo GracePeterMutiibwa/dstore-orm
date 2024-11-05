@@ -9,7 +9,7 @@ from .relationalMapper import DefinitionUtils
 import uuid
 
 
-class Collection:
+class SqliteORM:
     # will store the definitions
     definitions = {}
 

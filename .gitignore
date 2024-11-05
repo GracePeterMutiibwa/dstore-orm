@@ -1,6 +1,8 @@
 # local
 /learn/
-sampleUsage.py
+/sampleUsage.py
+details.db
+*.dst
 
 
 # Byte-compiled / optimized / DLL files

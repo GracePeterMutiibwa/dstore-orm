@@ -1,1 +1,1 @@
-from .DStore import Collection
+from .DStore import SqliteORM
