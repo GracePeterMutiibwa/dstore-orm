@@ -1,0 +1,2 @@
+Student:[name=str, age=int]
+Employee:[id=int, name=str]
