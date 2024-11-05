@@ -1,18 +1,22 @@
-from DStore import Collection
+from dstore import Collection
 
 # connect to the database
-databaseInstance = Collection().connect('./store/details.dst')
+databaseInstance = Collection().connect('./learn/details.dst')
 
-# print(databaseInstance.meta)
+# meta information
+print(databaseInstance.meta)
+
+print(databaseInstance.definitions)
+
 
 # data
-# dataToSave = {
-#     'age': 67,
-#     'name': 'Sample'
-# }
+dataToSave = {
+    'age': 67,
+    'name': 'Peter'
+}
 
-# 5ec3c47e-85e9-4cd3-b531-083c18bda522
-# recordId = databaseInstance.save("Student", dataToSave)
+# b700798d-9529-482b-9ecc-e5f363c58eb8
+recordId = databaseInstance.save("Student", dataToSave)
 
 # print(recordId)
 
@@ -22,7 +26,7 @@ databaseInstance = Collection().connect('./store/details.dst')
 # print(data)
 
 # update
-# databaseInstance.update("Student", ['age'], [22], ('name', 'Bless'))
+# databaseInstance.update("Employee", ['name'], ['Peter'], ('name', 'Grace'))
 
 # print('Finished')
 

@@ -1,8 +1,10 @@
 import os
 
-from dstProcessor import DstUtils
+from .dstProcessor import DstUtils
 
-from relationalMapper import MappingUtils
+from .relationalMapper import MappingUtils
+
+from .relationalMapper import DefinitionUtils
 
 import uuid
 
@@ -21,7 +23,7 @@ class Collection:
     def __init__(self):
         pass
 
-    def prepareDatabaseFiles(self, pathToDb:str=None, pathToDstFile:str=None):
+    def prepareDatabaseFiles(self, pathToDstFile:str=None, pathToDb:str=None):
         # create the definitions file
         if not pathToDstFile is None:
             with open(pathToDstFile, 'w+') as dstFileHandle:
@@ -45,6 +47,8 @@ class Collection:
         return referenceTypesList == dataTypesList
     
     def delete(self, tableName:str, conditions:list):
+        self.preExecutionChecks()
+
         assert isinstance(tableName, str), "Table name must of string type"
 
         assert tableName in self.definitions, "The table name specified does not exist"
@@ -90,6 +94,8 @@ class Collection:
         return
 
     def purge(self, tableName:str):
+        self.preExecutionChecks()
+
         assert isinstance(tableName, str), "Table name must of string type"
 
         assert tableName in self.definitions, "The table name specified does not exist"
@@ -100,6 +106,8 @@ class Collection:
         return
     
     def drop(self, tableName:str):
+        self.preExecutionChecks()
+
         assert isinstance(tableName, str), "Table name must of string type"
 
         assert tableName in self.definitions, "The table name specified does not exist"
@@ -111,6 +119,8 @@ class Collection:
 
 
     def update(self, tableName:str, fieldList:list, replaceList:list, primaryKey:tuple):
+        self.preExecutionChecks()
+
         assert isinstance(tableName, str), "Table name must of string type"
 
         assert tableName in self.definitions, "The table name specified does not exist"
@@ -145,8 +155,12 @@ class Collection:
         # check if that field exists
         assert primaryKey[0] in self.definitions[tableName], "Primary key field name not found in table definition"
 
+        # Primary: ('name', 'Bless')
+        # print('Primary:', primaryKey)
+
         # should not be part of replacing fields
-        assert not primaryKey[0] in fieldList, "Primary key field name {} should not be part of the fields to replace".format(primaryKey[0])
+        # Relaxed rules
+        # assert not primaryKey[0] in fieldList, "Primary key field name {} should not be part of the fields to replace".format(primaryKey[0])
 
         primaryKeyValueDataType = self.definitions[tableName][primaryKey[0]]
 
@@ -159,6 +173,8 @@ class Collection:
         return
     
     def fetch(self, tableName:str, dataFields:list=None):
+        self.preExecutionChecks()
+
         assert isinstance(tableName, str), "Table name must of string type"
 
         assert tableName in self.definitions, "The table name specified does not exist"
@@ -188,15 +204,28 @@ class Collection:
 
         return foundRecords
 
+    
+    def preExecutionChecks(self):
+        # check if there are definitions
+        assert len(self.definitions) > 0, "No table definitions detected, please define some and try again"
+
+        return
+
 
 
     def save(self, tableName:str, dataObject:dict):
+        # tables should be defined exist
+        self.preExecutionChecks()
+
         assert isinstance(tableName, str), "Table name must of string type"
 
         assert isinstance(dataObject, dict), "Data format not valid"
 
         # check if the table name exists in the definitions
         assert tableName in self.definitions, "The table name specified does not exist"
+
+        # Student {'age': 67, 'name': 'Sample'}
+        # print(tableName, dataObject)
 
         # provided keys
         # ['name', 'age']
@@ -218,24 +247,19 @@ class Collection:
             '__rowid__': ('TEXT', f"'{idOfRecord}'")
         }
 
-        for eachKey, eachDataValue in dataObject.items():
-            # get the type
-            requiredType = self.definitions[tableName][eachKey]
+        for eachFieldName, eachDataValue in dataObject.items():
+            # get the type information from the definitions
+            requiredType = self.definitions[tableName][eachFieldName]
 
             assert isinstance(eachDataValue, requiredType), f"The data value '{eachDataValue}' should be of type {requiredType}"
 
-            # 'str'
-            deducedType = self.determineTypeAsString(dataValue=eachDataValue)
 
-            
-            if deducedType == 'str':
-                typedValue = f"'{eachDataValue}'"
-
-            else:
-                typedValue = eachDataValue
-
-            # generate type-data object
-            fieldsAndTypes[eachKey] = (self.baseRelationTypesMap[deducedType], typedValue)
+            # deduce type and create pre-store format object
+            DefinitionUtils().createPreStoreFormat(
+                fieldName=eachFieldName,
+                fieldData=eachDataValue,
+                whereToStoreFormatObject=fieldsAndTypes
+            )
         
         # {'__rowid__': ('TEXT', "'9b63e0f0-231f-4b98-84c1-6ffbf26f8541'"), 'name': ('TEXT', "'Bless'"), 'age': ('INTEGER', 12)}
         # print(fieldsAndTypes)
@@ -246,17 +270,7 @@ class Collection:
         return idOfRecord
     
 
-    def determineTypeAsString(self, dataValue):
-        if isinstance(dataValue, str):
-            foundType = 'str'
 
-        elif isinstance(dataValue, float):
-            foundType = 'float'
-
-        else:
-            foundType = 'int'
-
-        return foundType
 
 
 
@@ -283,48 +297,59 @@ class Collection:
 
         return absolutePath
 
-    def connect(self, pathOfDatabase:str):
+    def connect(self, pathOfDefinitionFile:str):
         # validate its a string
-        assert isinstance(pathOfDatabase, str), "Path to databse definition has to be string"
+        assert isinstance(pathOfDefinitionFile, str), "Path to databse definition has to be string"
 
         # ensure the database has valid path length
-        assert len(pathOfDatabase) >= 5, "Path to the database appears invalid consider checking it"
+        assert len(pathOfDefinitionFile) >= 5, "Path to the database definition appears invalid consider checking it"
 
         # check if the database folder and the format
         # ('s', '.dst')
-        _, fileExtension = os.path.splitext(pathOfDatabase)
+        _, fileExtension = os.path.splitext(pathOfDefinitionFile)
 
-        assert fileExtension == '.dst', f"The extension of the database '{fileExtension}' is invalid"
+        assert fileExtension == '.dst', f"The extension '{fileExtension}' of the database definition is invalid"
 
         # check if the database exists
-        databaseExists = os.path.exists(pathOfDatabase)
+        databaseDefinitionExists = os.path.exists(pathOfDefinitionFile)
 
-        if databaseExists is False:
-            # get the folder that should contain the database
-            databaseDir = os.path.dirname(pathOfDatabase)
 
-            # print(databaseDir)
-            
-            # make sure the folder to contain the database exists
-            assert os.path.exists(databaseDir), f"The path '{databaseDir}' of the database folder seems to not exist"
+        # get the folder that should contain the database
+        databaseDefinitionFolder = os.path.dirname(pathOfDefinitionFile)
 
-            # path to sqlite database
-            self.dbPath = self.draftSqliteDbPath(pathOfDatabase)
 
-            # create the database and the files it will use
-            self.prepareDatabaseFiles(pathToDb=self.dbPath, pathToDstFile=pathOfDatabase)
+        # print(databaseDefinitionFolder)
+        
+        # make sure the folder to contain the database exists
+        assert os.path.exists(databaseDefinitionFolder), f"The path '{databaseDefinitionFolder}' meant to have the definitions file does not exist"
 
+
+        # path to sqlite database
+        self.dbPath = self.draftSqliteDbPath(pathOfDefinitionFile)
+
+        # create the definitions file if its missing
+        if databaseDefinitionExists is False:
+            self.prepareDatabaseFiles(pathToDstFile=pathOfDefinitionFile, pathToDb=None)
 
         else:
-            # keep track of the sqlite database path
-            self.dbPath = self.draftSqliteDbPath(pathOfDatabase)
+            pass
 
-            print('->', self.dbPath)
+        
+        # create the database file itself if its missing
+        if os.path.exists(self.dbPath) is False:
+            self.prepareDatabaseFiles(pathToDstFile=None, pathToDb=self.dbPath)
+
+        else:
+            pass
+
 
         # load the data from the dst file
-        definitionLines = self.extractLinesFromFile(pathOfDatabase)
+        definitionLines = self.extractLinesFromFile(pathOfDefinitionFile)
 
+        # 
+        # possible classes or tables
         self.meta = []
+
 
         for eachDefinitionLine in definitionLines:
             # process the definition line
@@ -334,16 +359,21 @@ class Collection:
                 pass
 
             else:
-                # check if the definition exosts twice
+                # check if the definition exists twice
                 assert not classLabel in self.definitions, "Duplicate table names exist"
 
-                # store
+
+                # upon connecting : it stores the different classes and the 
                 self.definitions[classLabel] = classAttributes
 
                 self.meta.append(classLabel)
 
-        # check if there are definitions
-        assert len(self.definitions) > 0, "No table definitions detected, please define some and try again"
+
+        # ensure that the tables exist
+        MappingUtils(pathToDatabase=self.dbPath).affirmThatTablesExist(
+            databaseDefinition=self.definitions
+        )
+
 
         return self
 
