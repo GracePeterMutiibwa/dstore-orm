@@ -2,6 +2,7 @@
 /learn/
 /sampleUsage.py
 details.db
+database-demo.py
 *.dst
 
 

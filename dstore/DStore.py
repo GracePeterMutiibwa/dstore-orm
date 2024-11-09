@@ -47,6 +47,9 @@ class SqliteORM:
         return referenceTypesList == dataTypesList
     
     def delete(self, tableName:str, conditions:list):
+        '''
+        Delete a given record or number of records based on a list of conditions
+        '''
         self.preExecutionChecks()
 
         assert isinstance(tableName, str), "Table name must of string type"
@@ -94,6 +97,9 @@ class SqliteORM:
         return
 
     def purge(self, tableName:str):
+        '''
+        Deletes all the records in the table and not the table itself
+        '''
         self.preExecutionChecks()
 
         assert isinstance(tableName, str), "Table name must of string type"
@@ -106,6 +112,10 @@ class SqliteORM:
         return
     
     def drop(self, tableName:str):
+        '''
+        Deletes the table itself from the database
+        '''
+
         self.preExecutionChecks()
 
         assert isinstance(tableName, str), "Table name must of string type"
@@ -119,6 +129,9 @@ class SqliteORM:
 
 
     def update(self, tableName:str, fieldList:list, replaceList:list, primaryKey:tuple):
+        """
+        Update given fields of the database with other values based on a chosen key
+        """
         self.preExecutionChecks()
 
         assert isinstance(tableName, str), "Table name must of string type"
@@ -173,6 +186,10 @@ class SqliteORM:
         return
     
     def fetch(self, tableName:str, dataFields:list=None):
+        '''
+        Retrieves a the available records from a given table based on the field list provided
+        `dataFields` - Is a list but it can be ommitted 
+        '''
         self.preExecutionChecks()
 
         assert isinstance(tableName, str), "Table name must of string type"

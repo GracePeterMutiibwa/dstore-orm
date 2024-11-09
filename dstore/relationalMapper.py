@@ -112,6 +112,8 @@ class MappingUtils:
         # generated query will look like -> DELETE FROM Student WHERE name="Sample" AND age=67;
         deleteQuery = f"DELETE FROM {nameOfTable} WHERE {andedConditions};"
 
+        # print(deleteQuery)
+
         self.plainQueryExecutor(deleteQuery)
 
         return
