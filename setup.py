@@ -9,9 +9,8 @@ readMePath = os.path.join(rootPath, "README.md")
 with codecs.open(readMePath, encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
-VERSION = '0.0.11'
+VERSION = '0.0.12'
 DESCRIPTION = 'A simple ORM for Sqlite3'
-LONG_DESCRIPTION = 'A package that allows to create objects as dictionaries and save them to the database without writing sql queries'
 
 # Setting up
 setup(
@@ -26,7 +25,7 @@ setup(
     install_requires=[],
     keywords=['python', 'sqlite3', 'orm', 'sqlite3 orm', 'save objects', 'save objects in Python'],
     classifiers=[
-        "Development Status :: 1 - Planning",
+        "Development Status :: 1 - Alpha Release",
         "Intended Audience :: Developers",
         "Programming Language :: Python :: 3",
         "Operating System :: Unix",
