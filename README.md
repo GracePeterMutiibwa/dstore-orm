@@ -2,7 +2,7 @@
 
 Ready for use , with all BASIC (Create, Read, Update, Delete) operations are supported.
 
-Developed by `Mutiibwa Grace Peter`, `Tukasiima Blessing` (c) 2024
+Developed by `Mutiibwa Grace Peter` [🔗](https://gracepeter.pythonanywhere.com/), `Tukasiima Blessing` (c) 2024
 
 ---
 `dstore-orm`  is a Sqlite ORM that offers means of saving objects (dictionaries) to the database, making it applicable for less data intensive applications while hiding the complexities of database interactions.
