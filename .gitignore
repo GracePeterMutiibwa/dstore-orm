@@ -4,6 +4,7 @@
 details.db
 database-demo.py
 *.dst
+dist/
 
 
 # Byte-compiled / optimized / DLL files

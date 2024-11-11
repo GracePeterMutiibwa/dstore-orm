@@ -9,7 +9,7 @@ readMePath = os.path.join(rootPath, "README.md")
 with codecs.open(readMePath, encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
-VERSION = '0.0.12'
+VERSION = '0.0.1'
 DESCRIPTION = 'A simple ORM for Sqlite3'
 
 # Setting up
@@ -28,7 +28,7 @@ setup(
     keywords=['python', 'sqlite3', 'orm', 'sqlite3 orm', 'save objects', 'save objects in Python'],
     classifiers=[
         "License :: OSI Approved :: MIT LICENSE",
-        "Development Status :: 2 - Beta",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "Programming Language :: Python :: 3",
         "Operating System :: Unix",
