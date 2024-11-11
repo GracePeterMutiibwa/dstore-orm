@@ -25,6 +25,7 @@ setup(
     install_requires=[],
     keywords=['python', 'sqlite3', 'orm', 'sqlite3 orm', 'save objects', 'save objects in Python'],
     classifiers=[
+        "License :: OSI Approved :: MIT LICENSE",
         "Development Status :: 2 - Beta",
         "Intended Audience :: Developers",
         "Programming Language :: Python :: 3",
