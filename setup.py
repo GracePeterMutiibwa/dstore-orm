@@ -14,7 +14,7 @@ DESCRIPTION = 'A simple ORM for Sqlite3'
 
 # Setting up
 setup(
-    name="dstore",
+    name="dstore-orm",
     version=VERSION,
     author="The Big Engineer (Mutiibwa Grace Peter), Blessing Tukasiima",
     author_email="<dstore.orm.helpdesk@gmail.com>",
@@ -27,7 +27,7 @@ setup(
     license='MIT',
     keywords=['python', 'sqlite3', 'orm', 'sqlite3 orm', 'save objects', 'save objects in Python'],
     classifiers=[
-        "License :: OSI Approved :: MIT LICENSE",
+        "License :: OSI Approved :: MIT License",
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "Programming Language :: Python :: 3",
