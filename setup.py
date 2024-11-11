@@ -22,7 +22,9 @@ setup(
     long_description_content_type="text/markdown",
     long_description=long_description,
     packages=find_packages(),
+    url='https://github.com/GracePeterMutiibwa/dstore-orm',
     install_requires=[],
+    license='MIT',
     keywords=['python', 'sqlite3', 'orm', 'sqlite3 orm', 'save objects', 'save objects in Python'],
     classifiers=[
         "License :: OSI Approved :: MIT LICENSE",
